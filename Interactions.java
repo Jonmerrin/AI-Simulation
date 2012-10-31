@@ -532,6 +532,7 @@ public class Interactions
             }
 
         }
+        System.out.println("");
     }
 }
 

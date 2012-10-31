@@ -54,6 +54,7 @@ class AI{
                 //moves all the movers forward a step and places them back on the map.
                 for(int z=0; z<theWorld.getPeople().size(); z++){
                     theWorld.getPeople().get(z).move();
+                    theWorld.getPeople().get(z).turn();
 
                 }
                 System.out.println(theWorld);
@@ -100,9 +101,9 @@ class AI{
                     System.out.println(theWorld.getPeople().get(x).getName());
                 }
             }
-
-        }
         System.out.println("");
         System.out.println("Type a command, or hit enter to continue");
+
+        }
     }
 }

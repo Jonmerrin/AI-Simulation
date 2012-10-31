@@ -1,7 +1,6 @@
 import java.awt.*; //provides Points
 import java.util.*;
 
-
 /**
  * Movers are the characters that everything revolves around.
  * 
@@ -177,13 +176,19 @@ public class Mover{
      * 
      */
     public void turn(){
-        if((stats[4]*1.3)-500>0){
-            stats[4] = (stats[4]*1.3)-500;
+        if((stats[4]*1.3)-200>0){
+            stats[4] = (stats[4]*1.3)-200;
             hunger = 0;
         }
         else{
             stats[4] = stats[4]*1.3;
             hunger = hunger+1;
+            if(hunger <= 2){
+                System.out.println(this.getName()+" is hungry.");
+            }
+            else{
+                System.out.println(this.getName()+" is starving.");
+            }
         }
     }
 
@@ -321,12 +326,12 @@ public class Mover{
             }
         }
         else{
-            System.out.println(this.getName()+" stays Stationary");
+            System.out.println(this.getName()+" stays stationary");
             currentWorld.getRoom(xLocation,yLocation).addMover(this);
         }
 
     }
-    
+
     //the following few let me reset and get the character's stats.
 
     public void setStr(int x){
@@ -406,7 +411,7 @@ public class Mover{
      * They can become friends or enemies right now, and change how aggressive they are towards one another,
      * but I plan on adding a lot to how a relationship impacts both the characters' moods and their actions towards each other with growing familiarity.
      */
-    
+
     public void addImpression(Interactions meeting){
         impressions.add(meeting);
     }
@@ -417,8 +422,7 @@ public class Mover{
     }
 
     //The following return the character's "personality," meaning how they are likely to act.
-    
-    
+
     public int getAggression(){
         return aggression;
     }
@@ -529,6 +533,7 @@ public class Mover{
                 this.addImpression(action);
                 guy.addImpression(otherAction);
             }
+
             else{
                 //checks to see if the two characters have met before
                 for(int x = 0; x < impressions.size(); x++){
@@ -560,10 +565,10 @@ public class Mover{
                             }
                         }
                         impressions.get(x).setAggression(impressions.get(x).getAggression()-impressions.get(x).getLove());
+                        break;
 
                     }
-                    //if not, the two characters share their first impressions here.
-                    else{
+                    else if(x==impressions.size()-1){
                         Interactions action = new Interactions(this , guy);
                         Interactions otherAction = new Interactions(guy , this);
                         action.compare(this, guy);
@@ -582,9 +587,12 @@ public class Mover{
                         otherAction.setAggression(otherAction.getAggression()-otherAction.getLove());
                         this.addImpression(action);
                         guy.addImpression(otherAction);
+
                     }
                 }
             }
+            //if not, the two characters share their first impressions here.
+
         }
     }
 
