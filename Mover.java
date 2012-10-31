@@ -174,20 +174,21 @@ public class Mover{
      * 
      * Every "turn" the character will gain 30% of what he already had,
      * but will lose the amount of moneys that it costs to subsist.
-     * 500 is a fairly arbitrary number, picked because it gives enough leeway for the wealthy to get wealthier, and the poor to get poorer
+     * 300 is a fairly arbitrary number, picked because it gives enough leeway for the wealthy to get wealthier, and the poor to get poorer
      * (a sad, but not totally inaccurate observation of the world)
      * 
      * And when hunger = 3, the character will die. I haven't put that in place yet because:
      * a) I don't have a system of repopulation yet (will come when I add females)
      * b) I don't yet have a system for weighing decisions based on desparation. I'll have people be more likely to help if the person is starving than if they just ate.
      * right now I feel that the odds are already stacked against the poor of my world, best not make those odds have consequences until they're balanced.
-     * 
+     * Maybe I'll work with an economy major to smooth this out =) 
+     *
      * I have a system in the Interactions class for theft and charity to mix it up a little.
      * 
      */
     public void turn(){
-        if((stats[4]*1.3)-200>0){
-            stats[4] = (stats[4]*1.3)-200;
+        if((stats[4]*1.3)-300>0){
+            stats[4] = (stats[4]*1.3)-300;
             hunger = 0;
         }
         else{
