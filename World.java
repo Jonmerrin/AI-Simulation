@@ -151,9 +151,11 @@ public class World {
         people.add(guy);
     }
 
-    //removes a mover from the list of people. Used in case of deaths.
+    //removes a mover from the list of people, and puts their name back into the random names pool.
+    //Used in case of deaths.
     public void removeMover(Mover guy){
         people.remove(guy);
+        charNames.add(guy.getName());
     }
 
     /**

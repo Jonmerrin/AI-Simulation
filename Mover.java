@@ -157,6 +157,16 @@ public class Mover{
         xLocation = x;
         yLocation = y;
     }
+    
+    //returns the character's position on the x axis
+    public int getXLocation(){
+        return xLocation;
+    }
+    
+    //returns the character's position on the y axis
+    public int getYLocation(){
+        return yLocation;
+    }
 
     /**
      * This method moves the characters forward a "turn"

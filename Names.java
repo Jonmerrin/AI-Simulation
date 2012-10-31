@@ -87,4 +87,8 @@ public class Names
 
         return finalName;
     }
+    
+    public void add(String newName){
+        names.add(newName);
+    }
 }

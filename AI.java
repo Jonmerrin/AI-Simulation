@@ -41,7 +41,6 @@ class AI{
                 System.exit(1);
             }
             input=input.toLowerCase();
-            
 
             //allows the player to "hit enter to continue"
             if(input.length()==0){
@@ -65,7 +64,7 @@ class AI{
             }
             // I used "move" before I got the "hit enter to continue" option working. 
             //I'm still not sure which I like better, so I didn't delete this one yet.
-            
+
             //             if(input.equals("move")){
             //                 for(int y=0; y<theWorld.getHeight(); y++){
             //                     for(int x=0; x<theWorld.getWidth(); x++){
@@ -83,7 +82,7 @@ class AI{
             if(input.equals("num")){
                 System.out.println(theWorld.getPeople().size());
             }
-            
+
             //shows which room all the movers are in.
             if(input.equals("room num")){
                 for(int y=0; y<theWorld.getHeight(); y++){
@@ -94,15 +93,33 @@ class AI{
                     }
                 }
             }
-            
+
             //shows a list of all the movers
             if(input.equals("attendence")){
                 for(int x=0; x<theWorld.getPeople().size(); x++){
                     System.out.println(theWorld.getPeople().get(x).getName());
                 }
             }
-        System.out.println("");
-        System.out.println("Type a command, or hit enter to continue");
+
+            if(input.equals("add")){
+                theWorld.createMover();
+            }
+
+            if(input.startsWith("remove ")){
+                if(input.length()>6){
+                    input=input.substring(input.indexOf(" ")+1);
+                    input = input.substring(0,1).toUpperCase()+input.substring(1);
+                    for(int x=0; x<theWorld.getPeople().size(); x++){
+                        if(input.equals(theWorld.getPeople().get(x).getName()) || input.equals(theWorld.getPeople().get(x).getName().substring(0,1))){
+                            theWorld.getRoom(theWorld.getPeople().get(x).getXLocation(),theWorld.getPeople().get(x).getYLocation()).removeMover(theWorld.getPeople().get(x));
+                            theWorld.removeMover(theWorld.getPeople().get(x));
+                        }
+                    }
+                    System.out.println(theWorld);
+                }
+            }
+            System.out.println("");
+            System.out.println("Type a command, or hit enter to continue");
 
         }
     }
