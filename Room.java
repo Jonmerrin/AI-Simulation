@@ -1,41 +1,18 @@
 import java.util.*;
 
+/**
+ * Creates the rooms that will contain characters (and eventually other stuff too)
+ */
 class Room{
+
     private String roomName = "Room";
-    private String roomDesc = "It's a room.";
-    private String roomDetail = "There's stuff in it.";
-    private String goNMessage = "You go North. ";
-    private String goEMessage = "You go East. ";
-    private String goWMessage = "You go West. ";
-    private String goSMessage = "You go South. ";
-    private String goNEMessage = "You travel in the north-eastern direction. ";
-    private String goNWMessage = "You travel in the north-western direction. ";
-    private String goSEMessage = "You travel in the south-eastern direction. ";
-    private String goSWMessage = "You travel in the south-western direction. ";
-    private String errorN = "You can't go North.";
-    private String errorE = "You can't go East.";
-    private String errorW = "You can't go West.";
-    private String errorS = "You can't go South.";
-    private String errorNE = "You can't go Northeast.";
-    private String errorNW = "You can't go Northwest.";
-    private String errorSE = "You can't go Southeast.";
-    private String errorSW = "You can't go Southwest.";
-    private int xLocation;
-    private int yLocation;
-    //private int currentLocation; We used to use this, but probably not anymore.
-    public int howLongForToString=3; //Sets the substring length for the method toString
-    private boolean north=false;
-    private boolean south=false;
-    private boolean east=false;
-    private boolean west=false;
-    private boolean northeast=false;
-    private boolean northwest=false;
-    private boolean southeast=false;
-    private boolean southwest=false;
-    private boolean hasBeenVisited=false;
-    private boolean interations = true;
-    //used to be private LinkedList<Item> items;
+
+    //will eventually store items that the AI can pick up to sell or trade.
     private Inventory items;
+    
+    public int howLongForToString=3; //Sets the substring length for the method toString
+
+    //keeps track of who is currently in the room.
     LinkedList<Mover> peopleInRoom;
 
     public Room(){
@@ -44,226 +21,67 @@ class Room{
 
     public Room(String newNameOfRoom){
         roomName=newNameOfRoom;
-        xLocation=0;
-        yLocation=0;
-        errorN="You can't go that way.";
-        errorE="You can't go that way.";
-        errorW="You can't go that way.";
-        errorS="You can't go that way.";
-        errorNE="There's no path going that way. Better stick to the road.";
-        errorNW="There's no path going that way. Better stick to the road.";
-        errorSE="There's no path going that way. Better stick to the road.";
-        errorSW="There's no path going that way. Better stick to the road.";
-        north=false;
-        south=false;
-        east=false;
-        west=false;
+        howLongForToString = 3;
+        
+
         items = new Inventory();
         peopleInRoom = new LinkedList<Mover>();
     }
 
-    public void setNMessage(String goMessage){
-        goNMessage=goMessage;
-    }
-
-    public void setEMessage(String goMessage){
-        goEMessage=goMessage;
-    }
-
-    public void setWMessage(String goMessage){
-        goWMessage=goMessage;
-    }
-
-    public void setSMessage(String goMessage){
-        goSMessage=goMessage;
-    }
-
-    public void setRoomName(String name){
-        roomName=name;
-    }
-
-    public void setDesc(String desc){
-        roomDesc=desc;
-    }
-
-    public void setDetail(String detail){
-        roomDetail=detail;
-    }
-
-    public void setNorth(boolean x){
-        north=x;
-    }
-
-    public void setSouth(boolean x){
-        south=x;
-    }
-
-    public void setEast(boolean x){
-        east=x;
-    }
-
-    public void setWest(boolean x){
-        west=x;
-    }
-
-    public void setNError(String errorMessage){
-        errorN=errorMessage;
-    }
-
-    public void setSError(String errorMessage){
-        errorS=errorMessage;
-    }  
-
-    public void setEError(String errorMessage){
-        errorE=errorMessage;
-    }  
-
-    public void setWError(String errorMessage){
-        errorW=errorMessage;
-    }
-
-    public String getRoomName(){
-        return(roomName);
-    }
-
-    public void getDesc(){
-        System.out.println(roomDesc+" "+tabulateItems());
-    }
-
-    public void getDetail(){
-        System.out.println(roomDetail+" "+tabulateItems());
-    }
-
-    public String getNMessage(){
-        return goNMessage;
-    }
-
-    public String getEMessage(){
-        return goEMessage;
-    }
-
-    public String getWMessage(){
-        return goWMessage;
-    }
-
-    public String getSMessage(){
-        return goSMessage;
-    }
-
-    public String getNEMessage(){
-        return goNEMessage;
-    }
-
-    public String getNWMessage(){
-        return goNWMessage;
-    }
-
-    public String getSEMessage(){
-        return goSEMessage;
-    }
-
-    public String getSWMessage(){
-        return goSWMessage;
-    }
-
-    public void getErrorN(){
-        System.out.println(errorN);
-    }
-
-    public void getErrorE(){
-        System.out.println(errorE);
-    }
-
-    public void getErrorW(){
-        System.out.println(errorW);
-    }
-
-    public void getErrorS(){
-        System.out.println(errorS);
-    }
-
-    public void getErrorNE(){
-        System.out.println(errorNE);
-    }
-
-    public void getErrorNW(){
-        System.out.println(errorNW);
-    }
-
-    public void getErrorSE(){
-        System.out.println(errorSE);
-    }
-
-    public void getErrorSW(){
-        System.out.println(errorSW);
-    }
-
-    public boolean getNorth(){
-        return(north);
-    }
-
-    public boolean getSouth(){
-        return(south);
-    }
-
-    public boolean getEast(){
-        return(east);
-    }
-
-    public boolean getWest(){
-        return(west);
-    }
-
-    public boolean getNortheast(){
-        return(northeast);
-    }
-
-    public boolean getNorthwest(){
-        return(northwest);
-    }
-
-    public boolean getSoutheast(){
-        return(southeast);
-    }
-
-    public boolean getSouthwest(){
-        return(southwest);
-    }
-    
+    //returns the list of movers in the room
     public LinkedList<Mover> getMovers(){
         return peopleInRoom;
     }
-    
+
+    //returns the amount of movers in the room.
     public int getMoversNum(){
         return peopleInRoom.size();
     }
 
+    //adds item to room
     public void addItem(Item newItem){
         if(newItem!=null){
             items.add(newItem);
         }
     }
 
+    //removes item from room
     public void removeItem(Item newItem){
         items.remove(newItem);
     }
 
+    /**
+     * Adds a mover to the room.
+     * Ensures that if there is more than 1 person in the room, they will interact.
+     * 
+     * The purpose for "rollForInitiative", aside from being a reference, is to randomize which of the two movers will be interacting.
+     * Because I go through through the list of movers one at a time to make them move, there would always be the same hierarchy of who would get the priority in the interaction.
+     * (i.e. who acts and who reacts)
+     * So I randomized it for the sake of fairness.
+     */
     public void addMover(Mover newMover){
         if (newMover != null){
             int rollForInitiative = (int)Math.floor(Math.random()*2);
             peopleInRoom.add(newMover);
-            if (peopleInRoom.size()==2){
+            if (peopleInRoom.size()>1){
                 peopleInRoom.get(rollForInitiative).interact(peopleInRoom.get(1-rollForInitiative));
             }
         }
     }
 
+    /**
+     * Takes removes a mover from the room.
+     */
     public void removeMover(Mover newMover){
         if (newMover != null){
             peopleInRoom.remove(newMover);
         }
     }
 
+    /**
+     * I thought about having some fun with little green men running around, but didn't get to finish it before the deadline.
+     * I'll finish it after.
+     */
     public boolean hasAlien( ) {
         if (peopleInRoom.size()<1){
             return false;
@@ -279,14 +97,6 @@ class Room{
         return false;
     }
 
-    public void setHasBeenVisited(){
-        hasBeenVisited=true;
-    }
-
-    public boolean getHasBeenVisited(){
-        return hasBeenVisited;
-    }
-
     /**
      * Verify that the room has the specified item
      */
@@ -299,6 +109,10 @@ class Room{
         return null;
     }
 
+    /**
+     * looks for a specific item by type.
+     * like the one further down.
+     */
     public Item checkItemType(String itemType){
         for(int x=0; x<items.size(); x++){
             if( items.get(x).getItemType().equals(itemType)){
@@ -308,6 +122,11 @@ class Room{
         return null;
     }
 
+    /**
+     * Gives a list of all the items in the room
+     * 
+     * not used for the AI, just for my main game, but I think there could be a use for it here too.
+     */
     public String tabulateItems(){
         StringBuffer temp;
         if(items.size()>0){
@@ -328,6 +147,11 @@ class Room{
 
     /**
      * ?? Incomplete search -- search for particular types of items
+     * 
+     * This will eventually allow you to sift through the room for specific item types.
+     * Helpful if a character has an item specific profession (locksmith is partial to keys)
+     * More helpful for my main game though.
+     * 
      */
     public String searchItemType(){
         StringBuffer temp;

@@ -1,3 +1,13 @@
+/**
+ * 
+ * This is a code using a lot of bits from my main game that I had to comment out to make it compile.
+ * 
+ * This was my first method of creating random characters,
+ * and my current method of making and destributing random items throughout the grid.
+ * 
+ * Only used in my main game so far, but will be really helpful when I add items.
+ */
+
 public class MagicMachine
 
 {

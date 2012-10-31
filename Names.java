@@ -1,14 +1,16 @@
 import java.util.*;
 /**
- * Write a description of class Names here.
+ * Names is a class that contains a list of 26 names, each one starting with a different letter of the alphabet.
+ * I did this so that when the characters print the first letter of their names on the grid, they'd be distinguishable from one another.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Right now only male names, because of reasons spoken about in other classes
+ * (male/female interactions would've taken too long to get this in on time)
+ * But that's next on my list, and I already have a list of 26 names at the ready.
+ * 
  */
 public class Names
 {
-    // instance variables - replace the example below with your own
-    private int x;
+//List of names:
     private String arnold = "Arnold";
     private String bartholomew = "Bartholomew";
     private String charlie = "Charlie";
@@ -35,6 +37,7 @@ public class Names
     private String xander = "Xander";
     private String yohann = "Yohann";
     private String zachary = "Zachary";
+//LinkedList of names:
     LinkedList<String> names;
 
     /**
@@ -42,7 +45,7 @@ public class Names
      */
     public Names()
     {
-        // initialise instance variables
+        // putting all the names in the LinkedList()
         names = new LinkedList<String>();
         names.add(arnold);
         names.add(bartholomew);
@@ -73,10 +76,7 @@ public class Names
     }
 
     /**
-     * An example of a method - replace this comment with your own
-     * 
-     * @param  y   a sample parameter for a method
-     * @return     the sum of x and y 
+     * Picks a random name, returns it, and takes it off the list of names to ensure that there are no repeats.
      */
     public String assignName(){
         String finalName = null;

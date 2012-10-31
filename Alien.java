@@ -1,17 +1,17 @@
 
 /**
- * Write a description of class Alien here.
+ * THe future of little green men.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * I really didn't get a chance to start it yet (as you can see), but I have fun plans for the aliens.
+ * 
+ * But for now, they are just plans.
+ * 
  */
 public class Alien extends Mover
 {
+
     /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y   a sample parameter for a method
-     * @return     the sum of x and y
+     * establishes that the alien is, in fact, an alien.
      */
     public Alien(String newName) {
         super( newName );

@@ -2,8 +2,9 @@ import java.util.*; //Provides collections and LinkedLists
 /**
  * Basically a LinkedList meant for greatness (superpower stuff) (later).
  * 
- * @author (Jonathan Merrin & Mike) 
- * @version (A)
+ * This is one of the big things I mentioned in the Item class.
+ * I have this up and running in my main game, and the framework exists here, I just don't do anything special with it yet.
+ * 
  */
 public class Inventory
 {

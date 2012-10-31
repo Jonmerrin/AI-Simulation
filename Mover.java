@@ -1,8 +1,24 @@
 import java.awt.*; //provides Points
 import java.util.*;
 
-public class Mover extends Item
-{
+
+/**
+ * Movers are the characters that everything revolves around.
+ * 
+ * Everything that is done in the program at some point will either have something done by a mover or done to a mover.
+ * Or both.
+ * 
+ * The class contains more attributes than I use later on.
+ * I had planned for there to be at least 10 attributes describing the personality,
+ * and more emphasis put on mood and physical condition (hunger and remaining health)
+ * I toned it down to one from three major components of a personality so that I could have something to send in with my application
+ * (Strength for physical prowess, Intellect for mental ability, morality for behavioral patterns)
+ * but I plan on factoring the rest in soon.
+ * 
+ * This already proved incredibly complicated for me, though, so I'm glad I did tone it down a bit to start.
+ * Otherwise it would have been much more overwhelming.
+ */
+public class Mover{
     Point currentLocation = new Point(0,0);
     private int xLocation = 0;
     private int yLocation = 0;
@@ -20,7 +36,7 @@ public class Mover extends Item
     private int statsNum = 5;
     protected double[] stats;
     LinkedList<Interactions> impressions;
-    boolean isAlien = false;
+    boolean isAlien = false; //more future fun with little green men
     private int aggression=0;
     private int compatibility=0;
     private int violence=0;
@@ -28,7 +44,7 @@ public class Mover extends Item
     private int hunger = 0;
     //curiosity?
     protected Inventory items;
-    private String name="Alf";
+    private String name="Alf"; //alien jokes.
     /**
      * Constructor for objects of class Mover
      */
@@ -45,6 +61,9 @@ public class Mover extends Item
 
     }
 
+    /**
+     * The constructor names a character, places it in a world, and assigns all the random attributes.
+     */
     public Mover(String newName, World newWorld){
         if(newName!=null){
             name=newName;
@@ -121,6 +140,7 @@ public class Mover extends Item
 
     }
 
+    //Changes the name. Not really used here, but couldn't hurt to have.
     public void setName(String newName){
         if (newName!=null){
             name=newName;
@@ -128,24 +148,54 @@ public class Mover extends Item
 
     }
 
+    //picks a new random name. Also not used, but could still be helpful.
     public void setRanName(Names name){
         name.assignName();
     }
 
+    //sets a new location for drag and drop fun!
     public void setLocation(int x, int y){
         xLocation = x;
         yLocation = y;
     }
 
+    /**
+     * This method moves the characters forward a "turn"
+     * This is where I tried to put in a simulated economy of sorts.
+     * 
+     * Every "turn" the character will gain 30% of what he already had,
+     * but will lose the amount of moneys that it costs to subsist.
+     * 500 is a fairly arbitrary number, picked because it gives enough leeway for the wealthy to get wealthier, and the poor to get poorer
+     * (a sad, but not totally inaccurate observation of the world)
+     * 
+     * And when hunger = 3, the character will die. I haven't put that in place yet because:
+     * a) I don't have a system of repopulation yet (will come when I add females)
+     * b) I don't yet have a system for weighing decisions based on desparation. I'll have people be more likely to help if the person is starving than if they just ate.
+     * right now I feel that the odds are already stacked against the poor of my world, best not make those odds have consequences until they're balanced.
+     * 
+     * I have a system in the Interactions class for theft and charity to mix it up a little.
+     * 
+     */
     public void turn(){
         if((stats[4]*1.3)-500>0){
             stats[4] = (stats[4]*1.3)-500;
+            hunger = 0;
         }
         else{
             stats[4] = stats[4]*1.3;
+            hunger = hunger+1;
         }
     }
 
+    /**
+     * 
+     * This method either moves the characters to an adjacent place on the grid, or keeps them in the same place.
+     * 
+     * Selects direction (dir) randomly, but rerolls the selection if the room is overcrowded or non-existent.
+     * 
+     * 
+     * I recognize that Math.random() isn't perfectly random, but it's all I know at the moment, and so all I use.
+     */
     public void move(){
         double dir = Math.random();
 
@@ -276,6 +326,8 @@ public class Mover extends Item
         }
 
     }
+    
+    //the following few let me reset and get the character's stats.
 
     public void setStr(int x){
         stats[0] = x;
@@ -332,6 +384,7 @@ public class Mover extends Item
         stats[2] = x;
     }
 
+    //reset everything
     public void setStats(int a, int b, double c, double d, double e, double f, double g, double h, double i, int j){
         this.setStr(a);
         this.setInt(b);
@@ -345,14 +398,27 @@ public class Mover extends Item
         this.setMorality(j);
     }
 
+    /**
+     * This adds a new interaction to the list Impressions.
+     * Interactions are stored there, and by extension so are one character's feelings for another.
+     * 
+     * This allows for characters to "remember" one another, and build a relationship over time.
+     * They can become friends or enemies right now, and change how aggressive they are towards one another,
+     * but I plan on adding a lot to how a relationship impacts both the characters' moods and their actions towards each other with growing familiarity.
+     */
+    
     public void addImpression(Interactions meeting){
         impressions.add(meeting);
     }
 
+    //returns the character's name
     public String getName(){
         return name;
     }
 
+    //The following return the character's "personality," meaning how they are likely to act.
+    
+    
     public int getAggression(){
         return aggression;
     }
@@ -369,19 +435,24 @@ public class Mover extends Item
         return cunning;
     }
 
+    //Allows the characters to jump from one world to the other. 
+    //Not used in the AI, but possibly later, if I choose to make multiple worlds at once.
     public void setWorld(World aWorld){
         //thought about null protection
         currentWorld=aWorld;
     }
 
+    //returns the world that the character is currently based on
     public World getWorld(){
         return currentWorld;
     }
 
+    //returns the number of stats I'm currently using for each character. This is helpful for reference while debugging.
     public int getStatsNum(){
         return statsNum;
     }
 
+    //The following bunch return general statistics about a character
     public double getStrength(){
         return stats[0];
     }
@@ -410,23 +481,40 @@ public class Mover extends Item
         return stats[x];
     }
 
+    //Returns the list of impressions one character has of other characters
     public LinkedList<Interactions> getImpressions(){
         return impressions;
     }
 
+    //gets the character's current location. Helpful for making sure the move command is functional
     public Point getCurrentLocation(){
         Point place = new Point(xLocation,yLocation);
         return place;
     }
 
+    /**
+     * This is the first interaction method involved in an interaction.
+     * The real one is contained within the class Interactions, but this sets up what goes through that class and where the class gets stored.
+     * 
+     * The method checks to see if the character has met the other character before.
+     * If they have, they interact based on their last impression of them, then the impression updates.
+     * If they have not, they create a new impression that they save for next time, and interact based on that.
+     * 
+     * There is also a reaction in here. 
+     * The reaction is the response to one of the 6 (a disappointingly small number compared to what I originally, and still have, planned) options of what one character can do to another.
+     * The reaction dictates how one character responds (multiple possible reactions per action) and how the two characters feel differently about each other in the end.
+     * 
+     */
     public void interact(Mover guy){
+        //checks null
         if(guy!=null && this!=null){
+            //If the character has never met anyone before, this makes their first impression
             if(impressions.size()==0){
                 Interactions action = new Interactions(this , guy);
                 Interactions otherAction = new Interactions(guy , this);
                 action.compare(this, guy);
                 otherAction.compare(guy, this);
-                System.out.println("\n");
+                System.out.println("");
                 action.interact(this, guy);
                 otherAction.setOption(action.getOption());
                 otherAction.react(guy, this);
@@ -442,6 +530,7 @@ public class Mover extends Item
                 guy.addImpression(otherAction);
             }
             else{
+                //checks to see if the two characters have met before
                 for(int x = 0; x < impressions.size(); x++){
                     if (guy.getName().equals(impressions.get(x).getOtherName())){
                         if(impressions.get(x).getLove()<=-5){
@@ -463,7 +552,7 @@ public class Mover extends Item
                         impressions.get(x).resetProbs();
                         impressions.get(x).interact(this, guy);
                         for(int y=0; y< guy.getImpressions().size(); y++){
-                            if(guy.getImpressions().get(y).equals(name)){
+                            if(guy.getImpressions().get(y).getOtherName().equals(this.getName())){
                                 guy.getImpressions().get(y).setOption(impressions.get(x).getOption());
                                 guy.getImpressions().get(y).resetProbs();
                                 guy.getImpressions().get(y).react(guy,this);
@@ -473,7 +562,7 @@ public class Mover extends Item
                         impressions.get(x).setAggression(impressions.get(x).getAggression()-impressions.get(x).getLove());
 
                     }
-
+                    //if not, the two characters share their first impressions here.
                     else{
                         Interactions action = new Interactions(this , guy);
                         Interactions otherAction = new Interactions(guy , this);
@@ -499,6 +588,10 @@ public class Mover extends Item
         }
     }
 
+    /**
+     * The toString will basically be like a baseball card showing off the character.
+     * All it's missing is a picture.
+     */
     public String toString(){
         StringBuffer buff = new StringBuffer( );
         buff.append("Name:" + name + " ");

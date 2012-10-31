@@ -1,15 +1,16 @@
 import java.util.*;
 
 /**
- * Interaction belongs to a character shows his attitude about another character.
- * Will also do an action.
+ * Interaction belongs to a character. Shows his feelings about another character.
+ * Will also do an action or a reaction.
  * 
- * @author (your name) 
- * @version (a version number or a date)
  */
 public class Interactions
 {
-    // instance variables - replace the example below with your own
+    // All of the attributes that will be used to describe interpersonal relationships that I have gotten around to putting in.
+    // The reason I don't have any female characters yet is because I'd have to start work on lust and flirtation and rejection
+    // and the multitudes of other things describing what could happen in a relationship between a boy and a girl (including reproduction and the friend zone)
+    // But that's next on my list.
     private double love = 0;
     private int aggression = 0;
     private int compatibility = 0;
@@ -29,7 +30,9 @@ public class Interactions
     private double cunningProb;
 
     /**
-     * Constructor for objects of class Interactions
+     * Constructor for Interactions
+     * 
+     * Just sets up the defaults.
      */
     public Interactions(Mover person, Mover secondPerson)
     {
@@ -51,14 +54,22 @@ public class Interactions
         cunningProb = 0;
     }
 
+    /**
+     * this resets the aggression after it's gone through a compare()
+     * (which is why it's the final aggression rather than the original)
+     * 
+     * This is used for updating based on emotional reactions to actions.
+     */
     public void setAggression(double x){
         finalAgg=x;
     }
 
+    //gets the aggression after a compare
     public double getAggression(){
         return finalAgg;
     }
 
+    //The following set and get all of the attributes held by this class:
     public void setCompatibility(int x){
         compatibility=x;
     }
@@ -71,10 +82,14 @@ public class Interactions
         violence=x;
     }
 
+    //gets the name of the character whom this is an impression of.
+    //useful for finding out if two characters have met before.
     public String getOtherName(){
         return otherName;
     }
 
+    //This is purely the result of actions and reactions.
+    //These contribute to the title given (enemy, nuisance, nothing, acquaintance, friend)
     public void setLove(double x){
         love = x;
     }
@@ -83,18 +98,22 @@ public class Interactions
         return love;
     }
 
+    //Positive is meant to show if the reaction was positive or negative.
+    //This is used to change the other character's love stat after they have already finished interacting.
     public boolean getPositive(){
         return positive;
     }
 
+    //Resets the probabilities of aggression and compatibility after a change in feeling between the two characters has occurred.
     public void resetProbs(){
         aggressionProb = finalAgg/(finalAgg+finalCom);
         compatibilityProb = finalCom/(finalAgg+finalCom);
     }
 
     /**
-     * The interaction between two characters. Figured it would be simpler to hold it all in another class.
+     * The interaction between two characters. Figured it would be simpler to hold it all in its own class.
      * 
+     * This compares one character's stats against the other to form a series of probabilities that will be used to form a likely course of action.
      */
     public void compare(Mover guy, Mover otherGuy){
         double dAggression = 0;
@@ -242,6 +261,7 @@ public class Interactions
 
         System.out.println(guy.getName() + " met " + otherGuy.getName()+".");
 
+        //For testing purposes, I used to print all the probabilities.
         //         System.out.println("Agression: " + finalAgg);
         //         System.out.println("Compatibility: " + finalCom);
         //         System.out.println("Cunning: " + finalCun);
@@ -256,18 +276,30 @@ public class Interactions
         cunningProb = finalCun/(finalVio+finalCun);
     }
 
+    //Returns which course of action was chosen.
     public int getOption(){
         return option;
     }
 
+    //sets which course of action was chosen.
     public void setOption(int x){
         option = x;
     }
 
+    //returns the final violence stat. I was going to make one for each of them, but didn't encounter the need to, so I put it off until after handing it in.
     public double getFinalVio(){
         return finalVio;
     }
 
+    /**
+     * The interaction method.
+     * 
+     * This method takes the probabilities established in compare(Mover,Mover) and selects a likely course of action using a couple of Math.random()'s.
+     * 
+     * You'll notice that the 6 options only say what they can do rather than actually do them.
+     * This is because we can't be sure that their action will succeed until we see the reaction.
+     * For this reason, all statements that actually change things are held in the react method.
+     */
     public void interact(Mover guy, Mover otherGuy){
         if(finalAgg<0){
             aggressionProb = 0;
@@ -336,6 +368,23 @@ public class Interactions
 
     }
 
+    /**
+     * The reaction method.
+     * 
+     * This method sees which of the six available options the interaction class chose.
+     * Then based on their own attributes, it picks how the character might respond.
+     * 
+     * This also uses the probabilities generated in compare(Mover,Mover)
+     * 
+     * another reiteration of what positive does:
+     * If positive is true, the other guy will get +1 love
+     * If positive is false, the other guy will get -1 love
+     * 
+     * Some of the reactions involve lowering the other player's health.
+     * When the player's health hits 0, they'll die, but I still don't want to put that in until I have a method of repopulation.
+     * I'd rather not make a last-man-standing type situation.
+     * 
+     */
     public void react(Mover guy, Mover otherGuy){
         double response = Math.random();
         double response2 = Math.random();

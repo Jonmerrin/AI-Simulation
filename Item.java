@@ -1,3 +1,12 @@
+
+/**
+ * This class doesn't really do anything for the AI program yet.
+ * 
+ * I have big plans for it though.
+ * 
+ * 
+ */
+
 class Item{
     private String itemDesc = "It's a thingamajig. You know... a whatchamacallit.";
     private String itemName = "unnamed item";
