@@ -95,7 +95,7 @@ class AI{
             }
 
             //shows a list of all the movers
-            if(input.equals("attendence")){
+            if(input.equals("attendance")){
                 for(int x=0; x<theWorld.getPeople().size(); x++){
                     System.out.println(theWorld.getPeople().get(x).getName());
                 }
