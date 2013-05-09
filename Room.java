@@ -24,8 +24,11 @@ class Room{
         howLongForToString = 3;
         
 
-        items = new Inventory();
+        items = new Inventory(this);
         peopleInRoom = new LinkedList<Mover>();
+    }
+    public String getRoomName(){
+        return roomName;
     }
 
     //returns the list of movers in the room

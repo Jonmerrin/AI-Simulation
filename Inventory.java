@@ -8,14 +8,21 @@ import java.util.*; //Provides collections and LinkedLists
  */
 public class Inventory
 {
-
+private String name = null;
     LinkedList<Item> myList;
     /**
      * Constructor for objects of class Inventory
      */
-    public Inventory()
+    public Inventory(Mover myMover)
     {
         myList = new LinkedList<Item>();
+        name = myMover.getName();
+    }
+
+    public Inventory(Room myRoom)
+    {
+        myList = new LinkedList<Item>();
+        name = myRoom.getRoomName();
     }
 
     public void add(Item thingy){
@@ -54,7 +61,7 @@ public class Inventory
             invStat.append("a "+myList.get(myList.size()-1).getName()+" x"+myList.get(myList.size()-1).checkStats()+".");
         }
         else{
-            invStat.append("You aren't carrying any items.");
+            invStat.append(name + " doesn't have any items.");
         }
         return invStat.toString(); //Print or Return?!
     }

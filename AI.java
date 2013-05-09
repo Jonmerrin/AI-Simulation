@@ -33,6 +33,8 @@ class AI{
 
             //Makes sure the input is readable
             String input = null;
+            String input2 = null;
+            String miscString = null;
             try{
                 input=br.readLine();
             }
@@ -118,9 +120,81 @@ class AI{
                     System.out.println(theWorld);
                 }
             }
+
+            if(input.startsWith("view ")){
+                if(input.length()>5){
+                    input=input.substring(5);
+                    if(input.startsWith("relationships ")){
+                        if(input.length()>14){
+                            input=input.substring(input.indexOf(" ")+1);
+                            input=input.substring(0,1).toUpperCase()+input.substring(1);
+                            for(int x=0;x<theWorld.getPeople().size();x++){
+                                if(theWorld.getPeople().get(x).getName().equals(input)){
+                                    if(theWorld.getPeople().get(x).getImpressions().size()==0){
+                                        System.out.println(theWorld.getPeople().get(x).getName() + " has yet to meet anyone.");
+                                    }
+                                    else{
+                                        for(int y=0;y<theWorld.getPeople().get(x).getImpressions().size();y++){
+
+                                            System.out.println(theWorld.getPeople().get(x).getImpressions().get(y).getRelationship());
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    //Doesn't work yet
+                    else if(input.startsWith("inv")){
+                        if(input.length()>4){
+                            input = input.substring(input.indexOf(" ")+1);
+                            input=input.substring(0,1).toUpperCase()+input.substring(1);
+                            for(int x=0;x<theWorld.getPeople().size();x++){
+                                if(theWorld.getPeople().get(x).getName().equals(input)){
+                                    if(theWorld.getPeople().get(x).getInventory().size()==0){
+                                        System.out.println(theWorld.getPeople().get(x).getName() + " isn't carrying anything.");
+                                    }
+                                    else{
+                                        System.out.println("He's got something!");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if(input.startsWith("profile ")){
+                        if(input.length()>8){
+                            input = input.substring(input.indexOf(" ")+1);
+                            input = input.substring(0,1).toUpperCase()+input.substring(1);
+                            for(int x=0; x<theWorld.getPeople().size(); x++){
+                                if(theWorld.getPeople().get(x).getName().equals(input)){
+                                    System.out.println(theWorld.getPeople().get(x));
+                                }
+                            }
+                        }
+                    }
+                    else if(input.startsWith("story ")){
+                        if(input.length()>6){
+                            input = input.substring(input.indexOf(" ")+1);
+                            input2 = input.substring(input.indexOf(" ")+1);
+                            input = input.substring(0,input.indexOf(" "));
+                            input = input.substring(0,1).toUpperCase()+input.substring(1);
+                            input2 = input2.substring(0,1).toUpperCase()+input2.substring(1);
+                            //System.out.println(input+"\n"+input2);
+                            for(int x=0; x<theWorld.getPeople().size(); x++){
+                                if(theWorld.getPeople().get(x).getName().equals(input)){
+                                    for(int y = 0; y<theWorld.getPeople().get(x).getImpressions().size(); y++){
+                                        if(theWorld.getPeople().get(x).getImpressions().get(y).getOtherName().equals(input2)){
+                                            System.out.println(theWorld.getPeople().get(x).getImpressions().get(y).getStory());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             System.out.println("");
             System.out.println("Type a command, or hit enter to continue");
-
         }
     }
 }

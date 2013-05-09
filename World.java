@@ -11,7 +11,7 @@ public class World {
     private int worldHeight = 5; 
     private int howManyRooms = 0; //keeps track of how many rooms there are at any given time.
     private Room[][] myWorld = null; //builds the grid of null rooms.
-    private Names charNames; //makes a Names class in the world. This will allow me to assign random names to my characters.
+    private NamesBoys charNames; //makes a Names class in the world. This will allow me to assign random names to my characters.
     //private Room blank;
     private String name = "World";
     LinkedList<Mover> people;
@@ -30,7 +30,7 @@ public class World {
      */
     public World(int newWorldWidth, int newWorldHeight, String newName) {
         //Room blank = new Room("   ");
-        charNames = new Names();
+        charNames = new NamesBoys();
 
         //makes sure the world has functional parameters
         if(newWorldWidth > 0) {

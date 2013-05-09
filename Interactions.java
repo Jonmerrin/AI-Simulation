@@ -11,16 +11,19 @@ public class Interactions
     // The reason I don't have any female characters yet is because I'd have to start work on lust and flirtation and rejection
     // and the multitudes of other things describing what could happen in a relationship between a boy and a girl (including reproduction and the friend zone)
     // But that's next on my list.
+    String lastInteract = new String();
+    private StringBuffer myStory= new StringBuffer();
     private double love = 0;
-    private int aggression = 0;
-    private int compatibility = 0;
-    private int violence = 0;
-    private int cunning = 0;
+    private double aggression = 0;
+    private double compatibility = 0;
+    private double violence = 0;
+    private double cunning = 0;
     private double finalAgg = 0;
     private double finalCom = 0;
     private double finalCun = 0;
     private double finalVio = 0;
     private String interaction;
+    private String thisName;
     private String otherName;
     private int option;
     private boolean positive;
@@ -28,6 +31,9 @@ public class Interactions
     private double compatibilityProb;
     private double violenceProb;
     private double cunningProb;
+
+    private double guilt=0;
+    private double currentExtremeEmotion;
 
     /**
      * Constructor for Interactions
@@ -37,6 +43,7 @@ public class Interactions
     public Interactions(Mover person, Mover secondPerson)
     {
         // initialise instance variables
+        thisName = person.getName();
         otherName = secondPerson.getName();
         aggression = person.getAggression();
         compatibility = person.getCompatibility();
@@ -52,6 +59,7 @@ public class Interactions
         compatibilityProb = 0;
         violenceProb = 0;
         cunningProb = 0;
+        myStory.append(thisName + " met "+ otherName + ".\n\n");
     }
 
     /**
@@ -82,6 +90,10 @@ public class Interactions
         violence=x;
     }
 
+    public String getName(){
+        return thisName;
+    }
+
     //gets the name of the character whom this is an impression of.
     //useful for finding out if two characters have met before.
     public String getOtherName(){
@@ -110,6 +122,14 @@ public class Interactions
         compatibilityProb = finalCom/(finalAgg+finalCom);
     }
 
+    public void addToStory(String addStuff){
+        myStory.append(addStuff+ "\n");
+    }
+
+    public String getLastInteract(){
+        return lastInteract;
+    }
+
     /**
      * The interaction between two characters. Figured it would be simpler to hold it all in its own class.
      * 
@@ -124,7 +144,7 @@ public class Interactions
 
         //NEW CONDENSED VERSION:
         for(int x=0; x<2; x++){
-            dCompatibility = dCompatibility + (2-Math.abs(guy.getStat(x)-guy.getStat(x)));
+            dCompatibility = dCompatibility + (2.25-Math.abs(guy.getStat(x)-otherGuy.getStat(x))/4);
             if (x==0){
                 dViolence = dViolence + (guy.getStrength()-otherGuy.getStrength());
             }
@@ -291,6 +311,27 @@ public class Interactions
         return finalVio;
     }
 
+    public String getRelationship(){
+        String relationshipStatus = new String();
+        if(love<-5){
+            relationshipStatus = "an enemy";
+        }
+        else if(love<-1){
+            relationshipStatus = "a nuisance";
+        }
+        else if(love<1){
+            relationshipStatus = "a person";
+        }
+        else if(love<5){
+            relationshipStatus = "an acquaintance";
+        }
+        else{
+            relationshipStatus = "a friend";
+        }
+
+        return(thisName + " considers " + otherName + " to be " + relationshipStatus + ".");
+    }
+
     /**
      * The interaction method.
      * 
@@ -333,19 +374,19 @@ public class Interactions
 
             if(violenceProb==0 && cunningProb==0){
                 System.out.println("INACTION!!!");
-                System.out.println(guy.getName() + " does nothing to " + otherGuy.getName() + ", but he doesn't seem to very much like him.");
+                lastInteract = (guy.getName() + " does nothing to " + otherGuy.getName() + ", but he doesn't seem to very much like him.");
                 option = 0;
             }
             else if(mindOrMatter<=violenceProb){
-                System.out.println(guy.getName() + " starts an argument with " + otherGuy.getName());
+                lastInteract = (guy.getName() + " starts an argument with " + otherGuy.getName());
                 option = 1;
             }
             else if(guy.getMorality()<5 && otherGuy.getWealth()>guy.getWealth()*2){
-                System.out.println(guy.getName() + " tries to steal from " + otherGuy.getName());
+                lastInteract = (guy.getName() + " tries to steal from " + otherGuy.getName());
                 option = 2;
             }
             else{
-                System.out.println(guy.getName() + " makes a witty insult about " + otherGuy.getName());
+                lastInteract = (guy.getName() + " makes a witty insult about " + otherGuy.getName());
                 option = 3;
             }
 
@@ -353,19 +394,23 @@ public class Interactions
         else{
             //             System.out.println("FRIENDSHIP!!!");
             if(mindOrMatter <= cunningProb){
-                System.out.println(guy.getName() + " starts a casual conversation with " + otherGuy.getName());
+                lastInteract = (guy.getName() + " starts a casual conversation with " + otherGuy.getName());
                 option = 4;
             }
             else if(guy.getMorality()>6 && guy.getWealth()>=otherGuy.getWealth()*2){
-                System.out.println(guy.getName() + " tries gives charity to " + otherGuy.getName());
+                lastInteract = (guy.getName() + " tries gives charity to " + otherGuy.getName());
                 option = 5;
             }
             else{
-                System.out.println(guy.getName() + " gets into a hearty debate with " + otherGuy.getName());
+                lastInteract = (guy.getName() + " gets into a hearty debate with " + otherGuy.getName());
                 option = 6;
             }
         }
-
+        System.out.println(lastInteract);
+        //myStory.append(lastInteract+"\n");
+//         if(otherGuy.getImpression(guy.getName())!=null){
+//             otherGuy.getImpression(guy.getName()).addToStory(lastInteract+"\n");
+//         }
     }
 
     /**
@@ -389,24 +434,24 @@ public class Interactions
         double response = Math.random();
         double response2 = Math.random();
         if(option == 0){
-            System.out.println(guy.getName()+" also keeps to himself.");
+            lastInteract = (guy.getName()+" also keeps to himself.");
             positive = true;
         }
         if(option == 1){
             if (response<=aggressionProb){
-                System.out.println(guy.getName() + " argues back against " + otherGuy.getName());
+                lastInteract = (guy.getName() + " argues back against " + otherGuy.getName());
                 positive = false;
                 love = love-1;
             }
             else {
-                System.out.println(guy.getName() + " ignores " + otherGuy.getName());
+                lastInteract = (guy.getName() + " ignores " + otherGuy.getName());
                 positive = false;
                 love = love-1;
             }
         }
         if(option == 2){
             if(guy.getStrength()>otherGuy.getStrength()){
-                System.out.println(guy.getName() + " defends himself against " + otherGuy.getName());
+                lastInteract = (guy.getName() + " defends himself against " + otherGuy.getName());
                 otherGuy.setHP(otherGuy.getHealth()-2);
                 positive = false;
                 love = love-1;
@@ -417,12 +462,12 @@ public class Interactions
                 otherGuy.setWealth(otherGuy.getWealth()+moneyTaken);
                 positive = true;
                 if(response <= violenceProb){
-                    System.out.println(guy.getName() + " attempts to defend himself against " + otherGuy.getName() + ", but fails.");
+                    lastInteract = (guy.getName() + " attempts to defend himself against " + otherGuy.getName() + ", but fails.");
                     guy.setHP(guy.getHealth()-2);
                     love = love-3;
                 }
                 else{
-                    System.out.println(guy.getName() + " gave up his money to " + otherGuy.getName());
+                    lastInteract = (guy.getName() + " gave up his money to " + otherGuy.getName());
                     love = love-2;
                 }
             }
@@ -430,24 +475,24 @@ public class Interactions
         if(option == 3){
             if(response<=aggressionProb){
                 if(response2<=violenceProb){
-                    System.out.println(guy.getName() + " punches " + otherGuy.getName() + " in the face and storms off.");
+                    lastInteract = (guy.getName() + " punches " + otherGuy.getName() + " in the face and storms off.");
                     guy.move();
                     otherGuy.setHP(otherGuy.getHealth()-.5);
                     positive = false;
                 }
                 else{
                     if(guy.getIntellect()>otherGuy.getIntellect()){
-                        System.out.println(guy.getName() + " replies to " + otherGuy.getName() + " with an even wittier retort.");
+                        lastInteract = (guy.getName() + " replies to " + otherGuy.getName() + " with an even wittier retort.");
                         love = love+1;
                         positive = false;
                     }
                     else if(guy.getIntellect()>5){
-                        System.out.println(guy.getName() + " replies to " + otherGuy.getName() + " in kind.");
+                        lastInteract = (guy.getName() + " replies to " + otherGuy.getName() + " in kind.");
                         love = love-1;
                         positive = false;
                     }
                     else{
-                        System.out.println(guy.getName() + " tries to form a clever response, but fails.");
+                        lastInteract = (guy.getName() + " tries to form a clever response, but fails.");
                         love = love-2;
                         positive = true;
                     }
@@ -455,12 +500,12 @@ public class Interactions
             }
             else{
                 if(guy.getIntellect()>otherGuy.getIntellect()){
-                    System.out.println(guy.getName() + " light-heartedly retorts with another witty comment.");
+                    lastInteract = (guy.getName() + " light-heartedly retorts with another witty comment.");
                     positive = false;
                     love = love+1;
                 }
                 else{
-                    System.out.println(guy.getName() + " ignores " + otherGuy.getName());
+                    lastInteract = (guy.getName() + " ignores " + otherGuy.getName());
                     positive = false;
                     love=love-1;
                 }
@@ -469,16 +514,16 @@ public class Interactions
         if(option == 4){
             if(response<=aggressionProb){
                 if(response2<=violenceProb){
-                    System.out.println(guy.getName() + " rudely ignores " + otherGuy.getName());
+                    lastInteract = (guy.getName() + " rudely ignores " + otherGuy.getName());
                     positive = false;
                 }
                 else{
-                    System.out.println(guy.getName() + " responds rudely to " + otherGuy.getName());
+                    lastInteract = (guy.getName() + " responds rudely to " + otherGuy.getName());
                     positive = false;
                 }
             }
             else{
-                System.out.println(guy.getName() + " responds positively in conversation with " + otherGuy.getName());
+                lastInteract = (guy.getName() + " responds positively in conversation with " + otherGuy.getName());
                 love = love+1;
                 positive = true;
             }
@@ -486,14 +531,14 @@ public class Interactions
         if(option == 5){
             if(response<=aggressionProb){
                 if(response2<=violenceProb){
-                    System.out.println(guy.getName() + " refuses " + otherGuy.getName()+"'s charity, and throws away his moneys.");
+                    lastInteract = (guy.getName() + " refuses " + otherGuy.getName()+"'s charity, and throws away his moneys.");
                     int howMuchMoney = (int)Math.ceil(Math.random()*2000);
                     guy.setWealth(guy.getWealth()-howMuchMoney);
                     positive = false;
                     love=love-1;
                 }
                 else{
-                    System.out.println(guy.getName() + " refuses " + otherGuy.getName()+"'s charity, and insults him personally for giving it.");
+                    lastInteract = (guy.getName() + " refuses " + otherGuy.getName()+"'s charity, and insults him personally for giving it.");
                     positive = false;
                     love = love-1;
                 }
@@ -501,11 +546,11 @@ public class Interactions
             }
             else{
                 if(response2<=cunningProb){
-                    System.out.println(guy.getName() + " accepts the charity graciously.");
+                    lastInteract = (guy.getName() + " accepts the charity graciously.");
                     positive = true;
                 }
                 else{
-                    System.out.println(guy.getName() + " accepts the charity begrudgingly");
+                    lastInteract = (guy.getName() + " accepts the charity begrudgingly");
                     positive = false;
 
                 }
@@ -513,26 +558,39 @@ public class Interactions
         }
         if(option == 6){
             if(response<=aggressionProb){
-                System.out.println(guy.getName() + " irritably insults " + otherGuy.getName());
+                lastInteract = (guy.getName() + " irritably insults " + otherGuy.getName());
                 positive = false;
                 love = love-1;
             }
             else{
-                System.out.println(guy.getName() + " enjoys the debate with " + otherGuy.getName());
+                lastInteract = (guy.getName() + " enjoys the debate with " + otherGuy.getName()+"\n");
                 positive = true;
                 love = love+1;
                 double whoWins = Math.random();
                 if(whoWins<=otherGuy.getIntellect()/(otherGuy.getIntellect()+guy.getIntellect())){
-                    System.out.println(guy.getName() + " won the debate! Good for him.");
+                    lastInteract = lastInteract+(guy.getName() + " won the debate! Good for him.");
                 }
                 else{
-                    System.out.println(otherGuy.getName() + " won the debate! Good for him.");
+                    lastInteract = lastInteract+(otherGuy.getName() + " won the debate! Good for him.");
                 }
 
             }
 
         }
+        System.out.println(lastInteract);
         System.out.println("");
+        //myStory.append(lastInteract+"\n\n");
+//         if(otherGuy.getImpression(guy.getName())!=null){
+//             otherGuy.getImpression(guy.getName()).addToStory(lastInteract+"\n\n");
+//         }
+    }
+
+    public void setLastInteract(String aString){
+        lastInteract = aString;
+    }
+
+    public String getStory(){
+        return myStory.toString();
     }
 }
 

@@ -36,11 +36,17 @@ public class Mover{
     protected double[] stats;
     LinkedList<Interactions> impressions;
     boolean isAlien = false; //more future fun with little green men
-    private int aggression=0;
-    private int compatibility=0;
-    private int violence=0;
-    private int cunning=0;
+    private double aggression=0;
+    private double compatibility=0;
+    private double violence=0;
+    private double cunning=0;
     private int hunger = 0;
+    //Motivations
+    private double empathy = 0;
+    private double sympathy = 0;
+    private double selfishness = 0;
+    private double desperation = 0;
+
     //curiosity?
     protected Inventory items;
     private String name="Alf"; //alien jokes.
@@ -70,7 +76,7 @@ public class Mover{
         if(newWorld!=null){
             currentWorld=newWorld;
         }
-        items =new Inventory();
+        items =new Inventory(this);
         stats = new double[statsNum];
 
         impressions = new LinkedList<Interactions>();
@@ -88,31 +94,10 @@ public class Mover{
         //        newWorld.getRoom(currentLocation.getX(), currentLocation.getY()).addMover(this);
 
         //Setting base personality
-        if(strength<=3){
-            violence=violence-1;
-        }
-        else if(strength<=6){
-            violence=violence+1;
 
-        }
-        else if(strength<=9){
-            violence=violence+2;
-        }
-        else{
-            violence=violence+3;
-        }
-
-        if(intellect<=3){
-            cunning=cunning-1;
-        }
-        else if(intellect<=6){
-        }
-        else if(intellect<=9){
-            cunning=cunning+1;
-        }
-        else{
-            cunning=cunning+3;
-        }
+        violence = strength-3;
+        cunning = intellect-3;
+        sympathy = morality-5;
 
         if(morality<=3){
             aggression=aggression+2;
@@ -148,7 +133,7 @@ public class Mover{
     }
 
     //picks a new random name. Also not used, but could still be helpful.
-    public void setRanName(Names name){
+    public void setRanName(NamesBoys name){
         name.assignName();
     }
 
@@ -157,15 +142,24 @@ public class Mover{
         xLocation = x;
         yLocation = y;
     }
-    
+
     //returns the character's position on the x axis
     public int getXLocation(){
         return xLocation;
     }
-    
+
     //returns the character's position on the y axis
     public int getYLocation(){
         return yLocation;
+    }
+
+    public Interactions getImpression(String nameOfChar){
+        for(int q = 0; q<impressions.size(); q++){
+            if(impressions.get(q).getOtherName().equals(nameOfChar)){
+                return impressions.get(q);
+            }
+        }
+        return null;
     }
 
     /**
@@ -174,21 +168,20 @@ public class Mover{
      * 
      * Every "turn" the character will gain 30% of what he already had,
      * but will lose the amount of moneys that it costs to subsist.
-     * 300 is a fairly arbitrary number, picked because it gives enough leeway for the wealthy to get wealthier, and the poor to get poorer
+     * 200 is a fairly arbitrary number, picked because it gives enough leeway for the wealthy to get wealthier, and the poor to get poorer
      * (a sad, but not totally inaccurate observation of the world)
      * 
      * And when hunger = 3, the character will die. I haven't put that in place yet because:
      * a) I don't have a system of repopulation yet (will come when I add females)
      * b) I don't yet have a system for weighing decisions based on desparation. I'll have people be more likely to help if the person is starving than if they just ate.
      * right now I feel that the odds are already stacked against the poor of my world, best not make those odds have consequences until they're balanced.
-     * Maybe I'll work with an economy major to smooth this out =) 
-     *
+     * 
      * I have a system in the Interactions class for theft and charity to mix it up a little.
      * 
      */
     public void turn(){
-        if((stats[4]*1.3)-300>0){
-            stats[4] = (stats[4]*1.3)-300;
+        if((stats[4]*1.3)-200>0){
+            stats[4] = (stats[4]*1.3)-200;
             hunger = 0;
         }
         else{
@@ -340,7 +333,6 @@ public class Mover{
             System.out.println(this.getName()+" stays stationary");
             currentWorld.getRoom(xLocation,yLocation).addMover(this);
         }
-
     }
 
     //the following few let me reset and get the character's stats.
@@ -393,7 +385,7 @@ public class Mover{
     }
 
     public void setWealth(double x){
-        wealth = x;
+        stats[4] = x;
     }
 
     public void setMorality(int x){
@@ -434,19 +426,19 @@ public class Mover{
 
     //The following return the character's "personality," meaning how they are likely to act.
 
-    public int getAggression(){
+    public double getAggression(){
         return aggression;
     }
 
-    public int getCompatibility(){
+    public double getCompatibility(){
         return compatibility;
     }
 
-    public int getViolence(){
+    public double getViolence(){
         return violence;
     }
 
-    public int getCunning(){
+    public double getCunning(){
         return cunning;
     }
 
@@ -501,6 +493,10 @@ public class Mover{
         return impressions;
     }
 
+    public Inventory getInventory(){
+        return items;
+    }
+
     //gets the character's current location. Helpful for making sure the move command is functional
     public Point getCurrentLocation(){
         Point place = new Point(xLocation,yLocation);
@@ -523,14 +519,17 @@ public class Mover{
     public void interact(Mover guy){
         //checks null
         if(guy!=null && this!=null){
-            //If the character has never met anyone before, this makes their first impression
+            boolean didInteract = false;
+            // If the character has never met anyone before, this makes their first impression
             if(impressions.size()==0){
+                didInteract = true;
                 Interactions action = new Interactions(this , guy);
                 Interactions otherAction = new Interactions(guy , this);
                 action.compare(this, guy);
                 otherAction.compare(guy, this);
                 System.out.println("");
                 action.interact(this, guy);
+                //peopleInRoom.get(1-rollForInitiative).getImpression(peopleInRoom.get(rollForInitiative).getName()).addToStory(peopleInRoom.get(rollForInitiative).getImpression(peopleInRoom.get(1-rollForInitiative).getName()).getLastInteract());
                 otherAction.setOption(action.getOption());
                 otherAction.react(guy, this);
                 if(otherAction.getPositive()){
@@ -541,30 +540,46 @@ public class Mover{
                 }
                 action.setAggression(action.getAggression()-action.getLove());
                 otherAction.setAggression(otherAction.getAggression()-otherAction.getLove());
+                action.addToStory(action.getLastInteract());
+                action.addToStory(otherAction.getLastInteract());
+                otherAction.addToStory(action.getLastInteract());
+                otherAction.addToStory(otherAction.getLastInteract());
                 this.addImpression(action);
                 guy.addImpression(otherAction);
             }
 
-            else{
-                //checks to see if the two characters have met before
+            //checks to see if the two characters have met before
+            if (didInteract==false){
+                String encounter = new String();
+                String approach = new String();
                 for(int x = 0; x < impressions.size(); x++){
                     if (guy.getName().equals(impressions.get(x).getOtherName())){
+                        didInteract = true;
                         if(impressions.get(x).getLove()<=-5){
-                            System.out.println(this.getName() + " re-encountered his enemy " + guy.getName());
+                            encounter = (this.getName() + " re-encountered his enemy " + guy.getName());
+                            approach = " his enemy ";
                         }
                         else if(impressions.get(x).getLove() <-1){
-                            System.out.println(this.getName() + " re-encountered the bothersome " + guy.getName());
+                            encounter = (this.getName() + " re-encountered the bothersome " + guy.getName());
+                            approach = " the bothersome ";
                         }
                         else if(impressions.get(x).getLove() <= 1){
-                            System.out.println(this.getName() + " re-encountered " + guy.getName());
+                            encounter = (this.getName() + " re-encountered " + guy.getName());
+                            approach = "";
                         }
                         else if(impressions.get(x).getLove() >1){
-                            System.out.println(this.getName() + " re-ecountered his acquaintance "+ guy.getName());
+                            encounter = (this.getName() + " re-ecountered his acquaintance "+ guy.getName());
+                            approach = " his acquaintance ";
                         }
                         else if(impressions.get(x).getLove() >=5){
-                            System.out.println(this.getName() + " re-encountered his friend "+ guy.getName());
+                            encounter = (this.getName() + " re-encountered his friend "+ guy.getName());
+                            approach = " his friend ";
                         }
+                        System.out.println(encounter);
+                        impressions.get(x).addToStory(encounter+"\n");
+                        guy.getImpression(name).addToStory(guy.getName()+" is approached by "+approach+name+".");
                         System.out.println("");
+
                         impressions.get(x).resetProbs();
                         impressions.get(x).interact(this, guy);
                         for(int y=0; y< guy.getImpressions().size(); y++){
@@ -575,36 +590,51 @@ public class Mover{
                                 guy.getImpressions().get(y).setAggression(guy.getImpressions().get(y).getAggression()-guy.getImpressions().get(y).getLove());
                             }
                         }
+                        this.getImpressions().get(x).addToStory(this.getImpressions().get(x).getLastInteract()+"\n");
+                        this.getImpressions().get(x).addToStory(guy.getImpression(name).getLastInteract()+"\n\n");
+                        guy.getImpression(name).addToStory(this.getImpressions().get(x).getLastInteract()+"\n");
+                        guy.getImpression(name).addToStory(guy.getImpression(name).getLastInteract()+"\n\n");
+                        
                         impressions.get(x).setAggression(impressions.get(x).getAggression()-impressions.get(x).getLove());
                         break;
 
                     }
-                    else if(x==impressions.size()-1){
-                        Interactions action = new Interactions(this , guy);
-                        Interactions otherAction = new Interactions(guy , this);
-                        action.compare(this, guy);
-                        otherAction.compare(guy, this);
-                        System.out.println("");
-                        action.interact(this, guy);
-                        otherAction.setOption(action.getOption());
-                        otherAction.react(guy, this);
-                        if(otherAction.getPositive()){
-                            action.setLove(action.getLove()+1);
+
+                    else if((x==impressions.size()-1)||(impressions.size()==0)){
+                        if(didInteract==false){
+                            Interactions action = new Interactions(this , guy);
+                            Interactions otherAction = new Interactions(guy , this);
+                            action.compare(this, guy);
+                            otherAction.compare(guy, this);
+                            System.out.println("");
+                            action.interact(this, guy);
+                            otherAction.setOption(action.getOption());
+                            otherAction.react(guy, this);
+                            if(otherAction.getPositive()){
+                                action.setLove(action.getLove()+1);
+                            }
+                            else{
+                                action.setLove(action.getLove()-1);
+                            }
+                            action.setAggression(action.getAggression()-action.getLove());
+                            otherAction.setAggression(otherAction.getAggression()-otherAction.getLove());
+                            this.addImpression(action);
+                            guy.addImpression(otherAction);
+                            action.addToStory(action.getLastInteract());
+                            action.addToStory(otherAction.getLastInteract());
+                            otherAction.addToStory(action.getLastInteract());
+                            otherAction.addToStory(otherAction.getLastInteract());
                         }
-                        else{
-                            action.setLove(action.getLove()-1);
-                        }
-                        action.setAggression(action.getAggression()-action.getLove());
-                        otherAction.setAggression(otherAction.getAggression()-otherAction.getLove());
-                        this.addImpression(action);
-                        guy.addImpression(otherAction);
 
                     }
                 }
+
             }
+
             //if not, the two characters share their first impressions here.
 
         }
+
     }
 
     /**
@@ -613,22 +643,25 @@ public class Mover{
      */
     public String toString(){
         StringBuffer buff = new StringBuffer( );
-        buff.append("Name:" + name + " ");
-        buff.append("Current Location:" + currentLocation + " ");
-        buff.append("world:" + currentWorld + " ");
+        buff.append("Name: " + name + " \n \n \n");
+        buff.append("Current Location: (" + xLocation + "," + yLocation + ") \n");
+        buff.append("world: " + currentWorld.getName() + " \n \n \n");
         // be careful if the world prints a map that holds the Mover(s)
         // which in turn print themselves including their world with mover
         // ad infinitum
-        buff.append("strength:" + strength + " ");
-        buff.append("intellect:" + intellect + " ");
-        buff.append("health:" + health + " "); //because, why not?
-        buff.append("senseOfHumor:" + senseOfHumor + " ");
-        buff.append("silliness:" + silliness + " ");
-        buff.append("stubbornness:" + stubbornness + " ");
-        buff.append("artsiness:" + artsiness + " ");
-        buff.append("speed:" + speed + " ");
-        buff.append("wealth:" + wealth + " ");
-        buff.append("Items:" + items +".");
+        buff.append("Statistics: \n \n");
+        buff.append("strength:" + stats[0] + " \n");
+        buff.append("intellect:" + stats[1] + " \n");
+        buff.append("morality:" + stats[2] + "\n");
+        buff.append("health:" + stats[3] + " \n"); //because, why not?
+        buff.append("senseOfHumor:" + senseOfHumor + " \n");
+        buff.append("silliness:" + silliness + " \n");
+        buff.append("stubbornness:" + stubbornness + " \n");
+        buff.append("artsiness:" + artsiness + "\n");
+        buff.append("speed:" + speed + "\n");
+        buff.append("wealth:" + stats[4] + " moneys.\n\n");
+        buff.append("Relationships: " + name + " has met " + impressions.size() + " people.\n");
+        buff.append("Inventory: " + items);
 
         return buff.toString( );
     }
